@@ -1,0 +1,35 @@
+---
+title: "PCA (Singular Value Decomposition)"
+format: html
+jupyter: python3
+---
+### 前言
+
+這是 StatQuest  154 影片集的第一集，講述 singular value decomposition SVD 的主成分分析 PCA:
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/FgakZw6K1QQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+看完之後我們利用 python 來做一個重點的回顧與練習。
+
+### 實際操作  
+我們從影片可以知道 PCA 主要是用來分群資料做 clustering，他的評斷方式主要為計算 Sum of square of distances / n-1 得到變異數 (variance)後計算每個 PC 佔多少 variance 的比例，通常可以用 scree plot 來呈現。所以以下實際示範我們從一個預設或是隨機生成的資料集之中進行 PCA 分析，並繪製 PC1, PC2 的圖以及 scree plot.
+
+- cocktail recipe, linear combination
+- singular vector, Eigenvector, loading score
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+
+r = np.arange(0, 2, 0.01)
+theta = 2 * np.pi * r
+fig, ax = plt.subplots(
+  subplot_kw = {'projection': 'polar'} 
+)
+ax.plot(theta, r)
+ax.set_rticks([0.5, 1, 1.5, 2])
+ax.grid(True)
+plt.show()
+```
+
+之後可參考 plotly 的教學：https://plotly.com/python/pca-visualization/
