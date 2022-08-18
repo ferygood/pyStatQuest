@@ -1,0 +1,23 @@
+project:
+  type: book
+
+book:
+  title: "pyStatQuest"
+  author: "Yao-Chung Chen"
+  date: "2022/8/19"
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - summary.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: journal
+  pdf:
+    documentclass: scrreprt
+
+
+
