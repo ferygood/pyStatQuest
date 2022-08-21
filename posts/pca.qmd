@@ -12,24 +12,175 @@ jupyter: python3
 看完之後我們利用 python 來做一個重點的回顧與練習。
 
 ### 實際操作  
-我們從影片可以知道 PCA 主要是用來分群資料做 clustering，他的評斷方式主要為計算 Sum of square of distances / n-1 得到變異數 (variance)後計算每個 PC 佔多少 variance 的比例，通常可以用 scree plot 來呈現。所以以下實際示範我們從一個預設或是隨機生成的資料集之中進行 PCA 分析，並繪製 PC1, PC2 的圖以及 scree plot.
+我們從影片可以知道 PCA 主要是用來分群資料做 clustering，他的評斷方式主要為計算 Sum of square of distances / n-1 得到變異數 (variance)後計算每個 PC 佔多少 variance 的比例，通常可以用 scree plot 來呈現。所以以下實際示範我們從一個預設或是隨機生成的資料集之中進行 PCA 分析，並繪製 PC1, PC2 的圖以及 scree plot. PCA 為一種 Unsupervised dimensionality reduction 的技術。
 
 - cocktail recipe, linear combination
-- singular vector, Eigenvector, loading score
+- singular vector, Eigenvector, loading score  
 
+### 補充概念
+PCA 是一種類型的 Singular Value Decomposition (SVD)，其目的在於解釋變異數 Variances。  
+PCA 概念為將數據透過線性投影的方式進行降維 **linear dimensionality reduction** ，而將數據降維的好處：
+
+- Dimension 可看成 feature
+- 數據在低維度較好理解跟做分析
+- 可分析相關特徵，特別是可以到二維或是三維的情況，對於視覺化很有幫助
+- 移除數據裡面的雜訊
+- 減少數據計算成本
+
+### PCA 其他應用
+- Factor Analysis
+- Independent Component Analysis (ICA)
+
+### 程式碼範例 1 
+####  使用 iris data
+我們使用 plotly 內建的 iris 資料，選取四個 features 將其用散佈圖視覺化：
 ```{python}
-import numpy as np
-import matplotlib.pyplot as plt
+import plotly.express as px
+import pandas as pd
 
-r = np.arange(0, 2, 0.01)
-theta = 2 * np.pi * r
-fig, ax = plt.subplots(
-  subplot_kw = {'projection': 'polar'} 
-)
-ax.plot(theta, r)
-ax.set_rticks([0.5, 1, 1.5, 2])
-ax.grid(True)
-plt.show()
+# load iris data
+df = px.data.iris()
+df.head()
 ```
 
-之後可參考 plotly 的教學：https://plotly.com/python/pca-visualization/
+```{python}
+# create scatter plot using plotly
+features = ["sepal_width", "sepal_length", "petal_width", "petal_length"]
+
+fig = px.scatter_matrix(
+    df,
+    dimensions=features,
+    color="species"
+)
+fig.update_traces(diagonal_visible=False)
+fig.show()
+
+```
+
+#### sklearn PCA
+```{python}
+from sklearn.decomposition import PCA
+
+pca = PCA()
+components = pca.fit_transform(df[features])
+labels = {
+    str(i): f"PC {i+1} ({var:.1f}%)"
+    for i, var in enumerate(pca.explained_variance_ratio_ * 100)
+}
+
+fig = px.scatter_matrix(
+    components,
+    labels=labels,
+    dimensions=range(4),
+    color=df["species"]
+)
+fig.update_traces(diagonal_visible=False)
+fig.show()
+```
+
+
+
+從 PCA 結果可以看出，xy 軸用 PC1 (92.5%), PC2 (5.3%) 可以有效分開不同的品種。
+
+### 程式碼範例 2
+由於範例 1 為相同 scale 且只有四個 features 較單純，而 PCA 線性轉換對 scale 敏感，所以範例 2 我們使用標準化的方法。使用 `seaborn` 套件內建的資料 `diamonds` 來做 PCA 分析。
+
+```{python}
+# load packages
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+from sklearn import decomposition
+
+diamond = sns.load_dataset("diamonds")
+diamond.head()
+```
+從資料可以看出 features 有 carat, cut, color, clarity, depth, table, price, x, y, z。  
+我們先設定來看 PCA 能不能區分顏色，所以第一步驟是將所有非數字的欄位轉成 `dummy variables `。
+
+```{python}
+# get dummies and store it in a variable
+dummies = pd.get_dummies(diamond[["cut", "clarity"]])
+
+# concat dummies to original dataframe and drop values
+merged = pd.concat([diamond, dummies], axis='columns')
+merged.drop(['cut', 'clarity'], axis='columns', inplace=True)
+
+print(merged.describe())
+merged
+```
+
+現在除了 color 之外，其他的都轉成數字了，但因為數字的 min, max, std 這些數值的級距不同，所以在做 PCA 之前先進行一個標準化的動作。
+```{python}
+pca = decomposition.PCA()
+pc = pca.fit_transform(merged.loc[:, merged.columns!='color'])
+pc_df = pd.DataFrame(data=pc)
+pc_df.head()
+
+df = pd.DataFrame({
+  'var': pca.explained_variance_ratio_,
+  'PC':["PC" + str(i) for i in list(range(1,21))]
+  })
+
+sns.barplot(x = 'PC', y='var', data=df, color="c")
+```
+
+上圖為未經標準化的 variance。
+
+```{python}
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+merged_scale = scaler.fit_transform(merged.loc[:, merged.columns!='color'])
+
+pca = decomposition.PCA()
+pc_scale = pca.fit_transform(merged_scale)
+pc_df_scale = pd.DataFrame(pc_scale, columns = ["PC" + str(i) for i in list(range(1,21))])
+pc_df_scale['color'] = merged.color
+
+df_scale = pd.DataFrame({
+  'var': pca.explained_variance_ratio_,
+  'PC': ["PC" + str(i) for i in list(range(1,21))]
+})
+
+sns.barplot(x = 'PC', y='var', data=df_scale, color="b")
+```
+
+上圖為經過 `standard scaler` 標準化的圖
+
+```{python}
+sns.lmplot(
+  x="PC1",
+  y="PC2",
+  data=pc_df_scale,
+  hue="color",
+  fit_reg = False,
+  legend=True,
+  scatter_kws={"s": 40}
+)
+```
+
+結果不是很理想，看起來這個資料集用 PCA 不是很好做顏色的 clustering。但我們還是呈現結果，並繪製 scree plot。之後有時間可以在嘗試不同的方法，但這個第二個部分主要是呈現有沒有標準化對於 variance 的影響。
+
+scree plot using `sns.scatterplot`
+```{python}
+pc_value = np.arange(pca.n_components_) + 1
+sns.scatterplot(
+  x='PC',
+  y='var',
+  data=df_scale
+)
+```
+
+### 重點回顧  
+- PCA 是一個線性降維的技術
+- 步驟是先將資料都`轉成數值型`，並`標準化（normalization, standardization)` 處理完之後進行 PCA 分析
+- 評斷結果好壞可以從視覺化下手：(1) xy 軸為 PC1, PC2 的分佈 (2) Scree plot
+- 理想上會希望前幾個 PCs 就能夠對於 Variance 有足夠的代表性 (Ex: 超過 70%)。
+
+### 參考資料
+[PCA 算法目的作用以及解析](https://blog.csdn.net/NeverLate_gogogo/article/details/88683904)  
+[Plotly PCA 的教學](https://plotly.com/python/pca-visualization/)  
+[標準化 PCA 教學](https://www.datasklr.com/principal-component-analysis-and-factor-analysis/principal-component-analysis)  
+[Python and R tips](https://cmdlinetips.com/2018/03/pca-example-in-python-with-scikit-learn/)
