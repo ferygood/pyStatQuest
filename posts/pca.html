@@ -118,6 +118,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-submit-button-title": "Submit"
   }
 }</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+        <script type="text/javascript">
+        window.PlotlyConfig = {MathJaxConfig: 'local'};
+        if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}
+        if (typeof require !== 'undefined') {
+        require.undef("plotly");
+        requirejs.config({
+            paths: {
+                'plotly': ['https://cdn.plot.ly/plotly-2.14.0.min']
+            }
+        });
+        require(['plotly'], function(Plotly) {
+            window._Plotly = Plotly;
+        });
+        }
+        </script>
+        
 
 
 </head>
@@ -187,6 +206,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul>
   <li><a href="#前言" id="toc-前言" class="nav-link active" data-scroll-target="#前言"> <span class="header-section-number">1.0.1</span> 前言</a></li>
   <li><a href="#實際操作" id="toc-實際操作" class="nav-link" data-scroll-target="#實際操作"> <span class="header-section-number">1.0.2</span> 實際操作</a></li>
+  <li><a href="#補充概念" id="toc-補充概念" class="nav-link" data-scroll-target="#補充概念"> <span class="header-section-number">1.0.3</span> 補充概念</a></li>
+  <li><a href="#pca-其他應用" id="toc-pca-其他應用" class="nav-link" data-scroll-target="#pca-其他應用"> <span class="header-section-number">1.0.4</span> PCA 其他應用</a></li>
+  <li><a href="#程式碼範例-1" id="toc-程式碼範例-1" class="nav-link" data-scroll-target="#程式碼範例-1"> <span class="header-section-number">1.0.5</span> 程式碼範例 1</a></li>
+  <li><a href="#程式碼範例-2" id="toc-程式碼範例-2" class="nav-link" data-scroll-target="#程式碼範例-2"> <span class="header-section-number">1.0.6</span> 程式碼範例 2</a></li>
+  <li><a href="#重點回顧" id="toc-重點回顧" class="nav-link" data-scroll-target="#重點回顧"> <span class="header-section-number">1.0.7</span> 重點回顧</a></li>
+  <li><a href="#參考資料" id="toc-參考資料" class="nav-link" data-scroll-target="#參考資料"> <span class="header-section-number">1.0.8</span> 參考資料</a></li>
   </ul>
 </nav>
     </div>
@@ -218,29 +243,751 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="實際操作" class="level3" data-number="1.0.2">
 <h3 data-number="1.0.2" class="anchored" data-anchor-id="實際操作"><span class="header-section-number">1.0.2</span> 實際操作</h3>
-<p>我們從影片可以知道 PCA 主要是用來分群資料做 clustering，他的評斷方式主要為計算 Sum of square of distances / n-1 得到變異數 (variance)後計算每個 PC 佔多少 variance 的比例，通常可以用 scree plot 來呈現。所以以下實際示範我們從一個預設或是隨機生成的資料集之中進行 PCA 分析，並繪製 PC1, PC2 的圖以及 scree plot.</p>
+<p>我們從影片可以知道 PCA 主要是用來分群資料做 clustering，他的評斷方式主要為計算 Sum of square of distances / n-1 得到變異數 (variance)後計算每個 PC 佔多少 variance 的比例，通常可以用 scree plot 來呈現。所以以下實際示範我們從一個預設或是隨機生成的資料集之中進行 PCA 分析，並繪製 PC1, PC2 的圖以及 scree plot. PCA 為一種 Unsupervised dimensionality reduction 的技術。</p>
 <ul>
 <li>cocktail recipe, linear combination</li>
 <li>singular vector, Eigenvector, loading score</li>
 </ul>
+</section>
+<section id="補充概念" class="level3" data-number="1.0.3">
+<h3 data-number="1.0.3" class="anchored" data-anchor-id="補充概念"><span class="header-section-number">1.0.3</span> 補充概念</h3>
+<p>PCA 是一種類型的 Singular Value Decomposition (SVD)，其目的在於解釋變異數 Variances。<br>
+PCA 概念為將數據透過線性投影的方式進行降維 <strong>linear dimensionality reduction</strong> ，而將數據降維的好處：</p>
+<ul>
+<li>Dimension 可看成 feature</li>
+<li>數據在低維度較好理解跟做分析</li>
+<li>可分析相關特徵，特別是可以到二維或是三維的情況，對於視覺化很有幫助</li>
+<li>移除數據裡面的雜訊</li>
+<li>減少數據計算成本</li>
+</ul>
+</section>
+<section id="pca-其他應用" class="level3" data-number="1.0.4">
+<h3 data-number="1.0.4" class="anchored" data-anchor-id="pca-其他應用"><span class="header-section-number">1.0.4</span> PCA 其他應用</h3>
+<ul>
+<li>Factor Analysis</li>
+<li>Independent Component Analysis (ICA)</li>
+</ul>
+</section>
+<section id="程式碼範例-1" class="level3" data-number="1.0.5">
+<h3 data-number="1.0.5" class="anchored" data-anchor-id="程式碼範例-1"><span class="header-section-number">1.0.5</span> 程式碼範例 1</h3>
+<section id="使用-iris-data" class="level4" data-number="1.0.5.1">
+<h4 data-number="1.0.5.1" class="anchored" data-anchor-id="使用-iris-data"><span class="header-section-number">1.0.5.1</span> 使用 iris data</h4>
+<p>我們使用 plotly 內建的 iris 資料，選取四個 features 將其用散佈圖視覺化：</p>
 <div class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.express <span class="im">as</span> px</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> np.arange(<span class="dv">0</span>, <span class="dv">2</span>, <span class="fl">0.01</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> np.pi <span class="op">*</span> r</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  subplot_kw <span class="op">=</span> {<span class="st">'projection'</span>: <span class="st">'polar'</span>} </span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>ax.plot(theta, r)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>ax.set_rticks([<span class="fl">0.5</span>, <span class="dv">1</span>, <span class="fl">1.5</span>, <span class="dv">2</span>])</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># load iris data</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> px.data.iris()</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>sepal_length</th>
+      <th>sepal_width</th>
+      <th>petal_length</th>
+      <th>petal_width</th>
+      <th>species</th>
+      <th>species_id</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>5.1</td>
+      <td>3.5</td>
+      <td>1.4</td>
+      <td>0.2</td>
+      <td>setosa</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>4.9</td>
+      <td>3.0</td>
+      <td>1.4</td>
+      <td>0.2</td>
+      <td>setosa</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>4.7</td>
+      <td>3.2</td>
+      <td>1.3</td>
+      <td>0.2</td>
+      <td>setosa</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4.6</td>
+      <td>3.1</td>
+      <td>1.5</td>
+      <td>0.2</td>
+      <td>setosa</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5.0</td>
+      <td>3.6</td>
+      <td>1.4</td>
+      <td>0.2</td>
+      <td>setosa</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create scatter plot using plotly</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> [<span class="st">"sepal_width"</span>, <span class="st">"sepal_length"</span>, <span class="st">"petal_width"</span>, <span class="st">"petal_length"</span>]</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> px.scatter_matrix(</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    df,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    dimensions<span class="op">=</span>features,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span><span class="st">"species"</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>fig.update_traces(diagonal_visible<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="pca_files/figure-html/cell-2-output-1.png" class="img-fluid"></p>
+
+<div>                            <div id="022283bf-764e-457a-a276-8468a2f6e1f8" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                require(["plotly"], function(Plotly) {                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("022283bf-764e-457a-a276-8468a2f6e1f8")) {                    Plotly.newPlot(                        "022283bf-764e-457a-a276-8468a2f6e1f8",                        [{"dimensions":[{"axis":{"matches":true},"label":"sepal_width","values":[3.5,3.0,3.2,3.1,3.6,3.9,3.4,3.4,2.9,3.1,3.7,3.4,3.0,3.0,4.0,4.4,3.9,3.5,3.8,3.8,3.4,3.7,3.6,3.3,3.4,3.0,3.4,3.5,3.4,3.2,3.1,3.4,4.1,4.2,3.1,3.2,3.5,3.1,3.0,3.4,3.5,2.3,3.2,3.5,3.8,3.0,3.8,3.2,3.7,3.3]},{"axis":{"matches":true},"label":"sepal_length","values":[5.1,4.9,4.7,4.6,5.0,5.4,4.6,5.0,4.4,4.9,5.4,4.8,4.8,4.3,5.8,5.7,5.4,5.1,5.7,5.1,5.4,5.1,4.6,5.1,4.8,5.0,5.0,5.2,5.2,4.7,4.8,5.4,5.2,5.5,4.9,5.0,5.5,4.9,4.4,5.1,5.0,4.5,4.4,5.0,5.1,4.8,5.1,4.6,5.3,5.0]},{"axis":{"matches":true},"label":"petal_width","values":[0.2,0.2,0.2,0.2,0.2,0.4,0.3,0.2,0.2,0.1,0.2,0.2,0.1,0.1,0.2,0.4,0.4,0.3,0.3,0.3,0.2,0.4,0.2,0.5,0.2,0.2,0.4,0.2,0.2,0.2,0.2,0.4,0.1,0.2,0.1,0.2,0.2,0.1,0.2,0.2,0.3,0.3,0.2,0.6,0.4,0.3,0.2,0.2,0.2,0.2]},{"axis":{"matches":true},"label":"petal_length","values":[1.4,1.4,1.3,1.5,1.4,1.7,1.4,1.5,1.4,1.5,1.5,1.6,1.4,1.1,1.2,1.5,1.3,1.4,1.7,1.5,1.7,1.5,1.0,1.7,1.9,1.6,1.6,1.5,1.4,1.6,1.6,1.5,1.5,1.4,1.5,1.2,1.3,1.5,1.3,1.5,1.3,1.3,1.3,1.6,1.9,1.4,1.6,1.4,1.5,1.4]}],"hovertemplate":"species=setosa<br>%{xaxis.title.text}=%{x}<br>%{yaxis.title.text}=%{y}<extra></extra>","legendgroup":"setosa","marker":{"color":"#636efa","symbol":"circle"},"name":"setosa","showlegend":true,"type":"splom","diagonal":{"visible":false}},{"dimensions":[{"axis":{"matches":true},"label":"sepal_width","values":[3.2,3.2,3.1,2.3,2.8,2.8,3.3,2.4,2.9,2.7,2.0,3.0,2.2,2.9,2.9,3.1,3.0,2.7,2.2,2.5,3.2,2.8,2.5,2.8,2.9,3.0,2.8,3.0,2.9,2.6,2.4,2.4,2.7,2.7,3.0,3.4,3.1,2.3,3.0,2.5,2.6,3.0,2.6,2.3,2.7,3.0,2.9,2.9,2.5,2.8]},{"axis":{"matches":true},"label":"sepal_length","values":[7.0,6.4,6.9,5.5,6.5,5.7,6.3,4.9,6.6,5.2,5.0,5.9,6.0,6.1,5.6,6.7,5.6,5.8,6.2,5.6,5.9,6.1,6.3,6.1,6.4,6.6,6.8,6.7,6.0,5.7,5.5,5.5,5.8,6.0,5.4,6.0,6.7,6.3,5.6,5.5,5.5,6.1,5.8,5.0,5.6,5.7,5.7,6.2,5.1,5.7]},{"axis":{"matches":true},"label":"petal_width","values":[1.4,1.5,1.5,1.3,1.5,1.3,1.6,1.0,1.3,1.4,1.0,1.5,1.0,1.4,1.3,1.4,1.5,1.0,1.5,1.1,1.8,1.3,1.5,1.2,1.3,1.4,1.4,1.7,1.5,1.0,1.1,1.0,1.2,1.6,1.5,1.6,1.5,1.3,1.3,1.3,1.2,1.4,1.2,1.0,1.3,1.2,1.3,1.3,1.1,1.3]},{"axis":{"matches":true},"label":"petal_length","values":[4.7,4.5,4.9,4.0,4.6,4.5,4.7,3.3,4.6,3.9,3.5,4.2,4.0,4.7,3.6,4.4,4.5,4.1,4.5,3.9,4.8,4.0,4.9,4.7,4.3,4.4,4.8,5.0,4.5,3.5,3.8,3.7,3.9,5.1,4.5,4.5,4.7,4.4,4.1,4.0,4.4,4.6,4.0,3.3,4.2,4.2,4.2,4.3,3.0,4.1]}],"hovertemplate":"species=versicolor<br>%{xaxis.title.text}=%{x}<br>%{yaxis.title.text}=%{y}<extra></extra>","legendgroup":"versicolor","marker":{"color":"#EF553B","symbol":"circle"},"name":"versicolor","showlegend":true,"type":"splom","diagonal":{"visible":false}},{"dimensions":[{"axis":{"matches":true},"label":"sepal_width","values":[3.3,2.7,3.0,2.9,3.0,3.0,2.5,2.9,2.5,3.6,3.2,2.7,3.0,2.5,2.8,3.2,3.0,3.8,2.6,2.2,3.2,2.8,2.8,2.7,3.3,3.2,2.8,3.0,2.8,3.0,2.8,3.8,2.8,2.8,2.6,3.0,3.4,3.1,3.0,3.1,3.1,3.1,2.7,3.2,3.3,3.0,2.5,3.0,3.4,3.0]},{"axis":{"matches":true},"label":"sepal_length","values":[6.3,5.8,7.1,6.3,6.5,7.6,4.9,7.3,6.7,7.2,6.5,6.4,6.8,5.7,5.8,6.4,6.5,7.7,7.7,6.0,6.9,5.6,7.7,6.3,6.7,7.2,6.2,6.1,6.4,7.2,7.4,7.9,6.4,6.3,6.1,7.7,6.3,6.4,6.0,6.9,6.7,6.9,5.8,6.8,6.7,6.7,6.3,6.5,6.2,5.9]},{"axis":{"matches":true},"label":"petal_width","values":[2.5,1.9,2.1,1.8,2.2,2.1,1.7,1.8,1.8,2.5,2.0,1.9,2.1,2.0,2.4,2.3,1.8,2.2,2.3,1.5,2.3,2.0,2.0,1.8,2.1,1.8,1.8,1.8,2.1,1.6,1.9,2.0,2.2,1.5,1.4,2.3,2.4,1.8,1.8,2.1,2.4,2.3,1.9,2.3,2.5,2.3,1.9,2.0,2.3,1.8]},{"axis":{"matches":true},"label":"petal_length","values":[6.0,5.1,5.9,5.6,5.8,6.6,4.5,6.3,5.8,6.1,5.1,5.3,5.5,5.0,5.1,5.3,5.5,6.7,6.9,5.0,5.7,4.9,6.7,4.9,5.7,6.0,4.8,4.9,5.6,5.8,6.1,6.4,5.6,5.1,5.6,6.1,5.6,5.5,4.8,5.4,5.6,5.1,5.1,5.9,5.7,5.2,5.0,5.2,5.4,5.1]}],"hovertemplate":"species=virginica<br>%{xaxis.title.text}=%{x}<br>%{yaxis.title.text}=%{y}<extra></extra>","legendgroup":"virginica","marker":{"color":"#00cc96","symbol":"circle"},"name":"virginica","showlegend":true,"type":"splom","diagonal":{"visible":false}}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmapgl":[{"type":"heatmapgl","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"legend":{"title":{"text":"species"},"tracegroupgap":0},"margin":{"t":60},"dragmode":"select"},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('022283bf-764e-457a-a276-8468a2f6e1f8');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };                });            </script>        </div>
 </div>
 </div>
-<p>之後可參考 plotly 的教學：https://plotly.com/python/pca-visualization/</p>
+</section>
+<section id="sklearn-pca" class="level4" data-number="1.0.5.2">
+<h4 data-number="1.0.5.2" class="anchored" data-anchor-id="sklearn-pca"><span class="header-section-number">1.0.5.2</span> sklearn PCA</h4>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>pca <span class="op">=</span> PCA()</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>components <span class="op">=</span> pca.fit_transform(df[features])</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> {</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">str</span>(i): <span class="ss">f"PC </span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss"> (</span><span class="sc">{</span>var<span class="sc">:.1f}</span><span class="ss">%)"</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, var <span class="kw">in</span> <span class="bu">enumerate</span>(pca.explained_variance_ratio_ <span class="op">*</span> <span class="dv">100</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> px.scatter_matrix(</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    components,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    labels<span class="op">=</span>labels,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    dimensions<span class="op">=</span><span class="bu">range</span>(<span class="dv">4</span>),</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span>df[<span class="st">"species"</span>]</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>fig.update_traces(diagonal_visible<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+<div>                            <div id="7d82f806-42a4-4950-a7d9-3ca2592a2398" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                require(["plotly"], function(Plotly) {                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("7d82f806-42a4-4950-a7d9-3ca2592a2398")) {                    Plotly.newPlot(                        "7d82f806-42a4-4950-a7d9-3ca2592a2398",                        [{"dimensions":[{"axis":{"matches":true},"label":"PC 1 (92.5%)","values":[-2.6842071251039448,-2.7153906156341265,-2.889819539617915,-2.7464371973087327,-2.728592981831313,-2.279897361009596,-2.8208906821806283,-2.6264819933238175,-2.8879585653356328,-2.6738446867191192,-2.506526789338902,-2.6131427182710545,-2.787433975997096,-3.2252004462749784,-2.6435432169411452,-2.3838693237993738,-2.6225262031258065,-2.648322732479125,-2.1990779614307616,-2.5873461889177363,-2.310531701313132,-2.5432349073036935,-3.2158576949001043,-2.303128537663881,-2.3561710866838967,-2.507917226837879,-2.4690559975451216,-2.5623909468367487,-2.63982126837658,-2.6328479080307563,-2.5884620513033902,-2.4100773371215944,-2.6476366733968986,-2.5971594770759165,-2.6738446867191192,-2.866999846932533,-2.6252284646804194,-2.6738446867191192,-2.981842664853906,-2.590323025585673,-2.770138910746322,-2.8522110815663897,-2.9982964428323498,-2.4055141012846994,-2.2088329541767036,-2.715665190747453,-2.5375733710135044,-2.8403212968270073,-2.5426857570770474,-2.7039123148636484]},{"axis":{"matches":true},"label":"PC 2 (5.3%)","values":[0.32660731476438754,-0.16955684755602643,-0.1373456096050273,-0.31112431575199145,0.3339245635684551,0.7477827132251337,-0.0821045110246804,0.17040534896029005,-0.5707980263315915,-0.10669170375273841,0.6519350136725719,0.021520631960258323,-0.2277401888711061,-0.5032799094854253,1.186194899413449,1.3447543445598624,0.8180896745965953,0.3191366677508848,0.8792440880917366,0.5204736388059683,0.3978678215888919,0.44003175465981564,0.14161557162558416,0.10552267842998243,-0.031209589068337897,-0.13905633991317412,0.13788731459041795,0.37468456275010614,0.31929006596032183,-0.19007583063362365,-0.19739307943769058,0.41808000824761604,0.8199826325595073,1.100021928007269,-0.10669170375273841,0.07719309572358729,0.6068000084215861,-0.10669170375273841,-0.4802500488560763,0.23605933728887296,0.27105941976516734,-0.9328653674695445,-0.33430757459077665,0.19591725769606114,0.44269603042100336,-0.24268148289811284,0.5103675454766062,-0.22057633827647619,0.5862810253439886,0.1150108521705058]},{"axis":{"matches":true},"label":"PC 3 (1.7%)","values":[-0.02151183700196294,-0.2035214250054905,0.024709240998956716,0.03767197528530121,0.09622969977460918,0.1743256190164025,0.264251085190696,-0.01580151026431506,0.0273354061145075,-0.19153329973564454,-0.06927499581393122,0.10765035324990464,-0.20032778809538912,0.06841362917233049,-0.14450570400963578,0.2837306639397765,0.14531598882161756,0.033394254070697994,-0.11452146479835311,0.21957208800082476,-0.23369560709796938,0.21483637027967514,0.299618981510871,0.04568004127448705,0.1294075758959934,-0.24711633789085957,0.10126307942970218,-0.0723591574360282,-0.13925337377853472,0.04646646364504575,-0.07127507313152597,-0.1383882400500409,0.23058560425417235,0.16358191262366215,-0.19153329973564454,-0.15684235049802414,-0.26116315648170557,-0.19153329973564454,0.07972480735962152,-0.07390123824707652,0.08424157450476319,-0.34096149110715107,0.19900842494724197,0.2707170703688332,0.3034878092682702,-0.09051560595006819,0.17191840447686046,0.09006137653041517,-0.01117526783116923,-0.08269572660682165]},{"axis":{"matches":true},"label":"PC 4 (0.5%)","values":[0.0010061572415399442,0.0996024240168161,0.01930454283250917,-0.0759552741085358,-0.0631287327171094,-0.02714680369790093,-0.0500996250628499,-0.046281760966509884,-0.026615414325656162,-0.0558909659960556,-0.01660824782448407,-0.157704569133212,-0.007235086738118975,-0.021946664123407376,0.15698096151652366,0.001926181709664808,0.16474079123407467,0.07611821327962356,0.02532693965637576,-0.06908199117876085,-0.0153237395650814,0.038439500101118,0.0018570433474501293,0.14724549964039962,-0.3016202653321938,0.03538408126768317,0.05597045237666049,-0.015240286774598438,0.06514104720019227,-0.1246111533664724,-0.06047626340782174,0.23084416997707075,-0.2848089542634612,-0.09895807058362008,-0.0558909659960556,0.16245280571606574,0.17587987484195133,-0.0558909659960556,-0.01105295083445918,-0.014556306249655954,0.09236465729576347,0.3226506066130546,-0.07587182131805259,0.17378512921102807,-0.1858575300726545,0.14298902533804533,-0.19216594594983707,-0.06039281061733849,-0.04833370254133826,0.03409957300828098]}],"hovertemplate":"color=setosa<br>%{xaxis.title.text}=%{x}<br>%{yaxis.title.text}=%{y}<extra></extra>","legendgroup":"setosa","marker":{"color":"#636efa","symbol":"circle"},"name":"setosa","showlegend":true,"type":"splom","diagonal":{"visible":false}},{"dimensions":[{"axis":{"matches":true},"label":"PC 1 (92.5%)","values":[1.2847945878450706,0.9324107529829172,1.4640613227790744,0.1809672063476988,1.087134487207,0.6404367495231453,1.0952237099384778,-0.751467140648226,1.0432977807062802,-0.010190070727852683,-0.5110861958950905,0.5110980606834774,0.26233575615318,0.9840445451694305,-0.17486400196569596,0.9275729420326988,0.6595927890562006,0.23454058625983554,0.9423617073988413,0.04324640032870459,1.1162407237538154,0.356786567830461,1.2964688502855333,0.9205026489090089,0.7140082136428327,0.8996408632837752,1.331041418854719,1.5573962720707015,0.8124555489980017,-0.3073347556634043,-0.07034288894927139,-0.19188449210314545,0.13499495045137325,1.3787369827755822,0.587274853579911,0.8072054966767163,1.2204289662446786,0.8128677903690694,0.245195161690346,0.16451342836925575,0.4630309888714242,0.8901604456511559,0.2288790499696475,-0.70708128392086,0.3555330391870635,0.3311269473327229,0.3752382289467659,0.6416902781665428,-0.9084633331234946,0.29780790740693414]},{"axis":{"matches":true},"label":"PC 2 (5.3%)","values":[0.6854391861329194,0.31919808983364856,0.5041898329724526,-0.8256039435761131,0.07539038928876704,-0.4173234829700255,0.2838912109384804,-1.0011075129743938,0.22895690877700642,-0.7205748667019013,-1.2624919538621404,-0.1022841050459702,-0.5478932980253373,-0.12436042022227795,-0.2518155710801705,0.4682362050431167,-0.35197629106031614,-0.33192182936212034,-0.5418222581500146,-0.5814894466123588,-0.08421401387837313,-0.06682382794136639,-0.3275615197949446,-0.18239036332792102,0.15037915314843686,0.3296109795818835,0.24466952060228866,0.2673925848127645,-0.16233157487863328,-0.3650866127661605,-0.7025379317307259,-0.6774905443743572,-0.31170964270339624,-0.4212051382146283,-0.4832842677174819,0.19505396377111184,0.40803533700101713,-0.3706789983189103,-0.2667280356618477,-0.6796614693108137,-0.6695265465361223,-0.03381244274676266,-0.4022576201789114,-1.0084247617784605,-0.5032184874026623,-0.21118014066262644,-0.2916220248087796,0.01907117649127056,-0.7515687251694855,-0.3470165215985638]},{"axis":{"matches":true},"label":"PC 3 (1.7%)","values":[-0.40612955307696313,-0.01712990920512535,-0.3382607277179589,-0.17708285639336432,-0.3065444648144316,0.04118876935364443,0.1700225337414996,0.015672194238160478,-0.41481456614870377,0.2834372462541257,-0.2664899538224492,0.1323278904749737,-0.691941578318964,-0.06215742761353877,0.09365863819195042,-0.31322940056857723,0.3283842970693478,-0.2702806708356934,-0.49734854117770394,-0.23296355648252248,0.4598442265727531,-0.22747218032088318,-0.34751321258424994,-0.23161141855266992,-0.3203723328292696,-0.3147714813796255,-0.5212449247379843,-0.16463849085222856,0.0363435763444907,-0.3153371969389197,-0.24175804484226762,-0.30391654346362434,-0.17497330378776502,0.01548049512170842,0.4445837530348708,0.38945871138620225,-0.236566086849828,-0.6128710500606726,0.1895624847292419,-0.057799238805743884,-0.024053890889809134,-0.009768026368424792,-0.22736270503287903,-0.1020693425384113,0.01788946589650768,0.0838090732225157,0.07907335550136596,-0.20417287686374616,-0.007736584506980429,0.012179139158859422]},{"axis":{"matches":true},"label":"PC 4 (0.5%)","values":[0.01929011685534334,-6.757941710509204e-06,-0.0008576440476193869,0.09578444837157984,0.1133845390093369,-0.24267131206866582,-0.08497338932826716,-0.016510592154629893,-0.03752355359177022,-0.005945701975093472,0.048908806063423405,0.050100535156594767,0.061484989083400214,-0.1690106698709526,0.12494088656962879,0.10043888414555996,-0.18899152519294937,-0.2119849952922857,0.2606366850425494,-0.039561180738330155,-0.07721355961071598,0.12409000046372004,0.00324623910203691,-0.2868253467053201,0.0429412331735037,0.10112286467050256,0.037505049655828675,0.07035309510363975,-0.02968027108373628,0.07653037763062077,0.00909469851960668,-0.018045458785481777,0.03418291424986639,-0.17758073696002416,-0.2524424346266573,-0.116615391254638,0.03163524398466042,0.15770049117443602,-0.14732804233713756,0.0309655778879862,-0.26844350832386893,-0.1534482063797552,0.01862045075866921,0.047624297804021005,-0.09807163534474155,-0.23868654239135992,-0.13116505111148086,-0.020509676260204425,0.2335586342743453,-0.050783717136689804]}],"hovertemplate":"color=versicolor<br>%{xaxis.title.text}=%{x}<br>%{yaxis.title.text}=%{y}<extra></extra>","legendgroup":"versicolor","marker":{"color":"#EF553B","symbol":"circle"},"name":"versicolor","showlegend":true,"type":"splom","diagonal":{"visible":false}},{"dimensions":[{"axis":{"matches":true},"label":"PC 1 (92.5%)","values":[2.531726980439558,1.414072225173757,2.616484608284042,1.9708149459064812,2.3497579839509415,3.3968799206781357,0.5193832450849365,2.932005096991299,2.3196727938740516,2.918134233644251,1.661934947019486,1.8023404526607323,2.1653788629533963,1.3445942175098242,1.5852672993086434,1.9047435782139115,1.9492487818644968,3.488765379656384,3.7946868612099682,1.2983298245678152,2.428167259020847,1.1980973722749626,3.4992654842989546,1.3876682501815552,2.2758536493056933,2.6141938306983326,1.257625182925136,1.2906696477376007,2.1228539805083124,2.387564402369026,2.8409609252853816,3.232342898295873,2.1587383731331338,1.443102604375974,1.7796401068985688,3.07652162102066,2.144986856709303,1.9048629251371305,1.168853469470403,2.1076537311732677,2.3143033946295466,1.9224508848357522,1.414072225173757,2.5633227123408084,2.419391219804979,1.9440170488777364,1.5256636313138718,1.764045935526982,1.9016290752882323,1.3896661333194162]},{"axis":{"matches":true},"label":"PC 2 (5.3%)","values":[-0.011842236640300048,-0.5749250559123045,0.3419352869872943,-0.18112569470491366,-0.04188254965484179,0.547168046230152,-1.1913516890506526,0.35237700618085926,-0.24554817060691062,0.7803806293720321,0.24203840103752236,-0.2161546066265365,0.21528028337300695,-0.776415425176825,-0.5393070538471718,0.11881899098269856,0.0407302594277678,1.1715445442635641,0.2532655709725338,-0.761013936521508,0.37678197125415247,-0.605578961764594,0.4567734669640737,-0.20403098657015503,0.3333865257566421,0.558366950278822,-0.17913699742322298,-0.11642525182937234,-0.21085488454948997,0.46251925072625993,0.3727425910490206,1.3705240359763333,-0.21832553156299334,-0.14380128908272632,-0.5014647947060155,0.6857644422460559,0.13890660887731485,0.04804750823183476,-0.16450249981508974,0.3714822491771055,0.1826088507936985,0.40927117617869524,-0.5749250559123045,0.2759745022398382,0.30350393770262885,0.1874152220460136,-0.3750208481918233,0.07851918642935737,0.11587674824796598,-0.2828867091722688]},{"axis":{"matches":true},"label":"PC 3 (1.7%)","values":[0.7584586515284949,0.2963982243052131,-0.1121413705543668,0.1065391486498459,0.28411068086616714,-0.3518731576273014,0.5466855311249488,-0.42369127833689696,-0.3499221833590492,0.42173893361376674,0.2428152634675929,-0.037695328493964626,0.03314818319913303,0.2828680182243183,0.6305704884623254,0.48013807976572825,0.042729093929436496,0.129320083361775,-0.5169707159938947,-0.3448870474686993,0.21864907004670486,0.5126407650398146,-0.5769101867216482,-0.063511321778648,0.28467815266071755,-0.20842334661879347,0.04697780744922718,0.23161356056830584,0.15351588509125508,-0.45202396144912727,-0.5010315391382013,-0.11844877739515829,0.20842197616391556,-0.15408297110542699,-0.17581118605670307,-0.33642274120822396,0.7341847390548596,0.1604706307060082,0.2824608810023711,0.027437856461485097,0.32286040074238215,0.11549281596071709,0.2963982243052131,0.29125361312685927,0.5043025169513592,0.17930287068112655,-0.12063644074491194,0.13078405342866864,0.7228735608675684,0.3623178316312213]},{"axis":{"matches":true},"label":"PC 4 (0.5%)","values":[-0.03259956851444925,-0.01569547827948598,0.06595604952643848,-0.23685862488186119,-0.0013127240036090917,-0.11121996802024871,-0.09879841992577922,-0.2554073688442786,-0.07626286251324571,0.107729319478853,0.11944758456759062,0.07871345255565043,0.16266728030785257,0.14048189225832974,0.32745536666912806,0.21711450049899506,-0.15784525195695603,-0.3116298379326806,0.05645164354097455,-0.04267371805612869,0.18385417915128938,0.05950003054907901,-0.13775959759087722,0.16376353673268976,-0.062230277600379726,-0.24044543308754107,0.14760054550703341,0.0030843215735913173,0.052612433191036374,-0.22990687721412378,-0.020216625381557492,-0.2544873443761551,0.12772448922911858,-0.18992586408934103,-0.5035294527425076,0.31058909243773947,0.051766535137647667,-0.22198014191560672,0.019330765589731586,0.2099551985159037,0.27589665973045435,0.50409500679105,-0.01569547827948598,0.05618492696844714,0.2382179465519489,0.42508163386614445,0.25572256452137176,0.1362945563181901,0.0408728218486993,-0.15631038532610417]}],"hovertemplate":"color=virginica<br>%{xaxis.title.text}=%{x}<br>%{yaxis.title.text}=%{y}<extra></extra>","legendgroup":"virginica","marker":{"color":"#00cc96","symbol":"circle"},"name":"virginica","showlegend":true,"type":"splom","diagonal":{"visible":false}}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmapgl":[{"type":"heatmapgl","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"legend":{"title":{"text":"color"},"tracegroupgap":0},"margin":{"t":60},"dragmode":"select"},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('7d82f806-42a4-4950-a7d9-3ca2592a2398');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };                });            </script>        </div>
+</div>
+</div>
+<p>從 PCA 結果可以看出，xy 軸用 PC1 (92.5%), PC2 (5.3%) 可以有效分開不同的品種。</p>
+</section>
+</section>
+<section id="程式碼範例-2" class="level3" data-number="1.0.6">
+<h3 data-number="1.0.6" class="anchored" data-anchor-id="程式碼範例-2"><span class="header-section-number">1.0.6</span> 程式碼範例 2</h3>
+<p>由於範例 1 為相同 scale 且只有四個 features 較單純，而 PCA 線性轉換對 scale 敏感，所以範例 2 我們使用標準化的方法。使用 <code>seaborn</code> 套件內建的資料 <code>diamonds</code> 來做 PCA 分析。</p>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load packages</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn <span class="im">import</span> decomposition</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>diamond <span class="op">=</span> sns.load_dataset(<span class="st">"diamonds"</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>diamond.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>carat</th>
+      <th>cut</th>
+      <th>color</th>
+      <th>clarity</th>
+      <th>depth</th>
+      <th>table</th>
+      <th>price</th>
+      <th>x</th>
+      <th>y</th>
+      <th>z</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.23</td>
+      <td>Ideal</td>
+      <td>E</td>
+      <td>SI2</td>
+      <td>61.5</td>
+      <td>55.0</td>
+      <td>326</td>
+      <td>3.95</td>
+      <td>3.98</td>
+      <td>2.43</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.21</td>
+      <td>Premium</td>
+      <td>E</td>
+      <td>SI1</td>
+      <td>59.8</td>
+      <td>61.0</td>
+      <td>326</td>
+      <td>3.89</td>
+      <td>3.84</td>
+      <td>2.31</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.23</td>
+      <td>Good</td>
+      <td>E</td>
+      <td>VS1</td>
+      <td>56.9</td>
+      <td>65.0</td>
+      <td>327</td>
+      <td>4.05</td>
+      <td>4.07</td>
+      <td>2.31</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.29</td>
+      <td>Premium</td>
+      <td>I</td>
+      <td>VS2</td>
+      <td>62.4</td>
+      <td>58.0</td>
+      <td>334</td>
+      <td>4.20</td>
+      <td>4.23</td>
+      <td>2.63</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.31</td>
+      <td>Good</td>
+      <td>J</td>
+      <td>SI2</td>
+      <td>63.3</td>
+      <td>58.0</td>
+      <td>335</td>
+      <td>4.34</td>
+      <td>4.35</td>
+      <td>2.75</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<p>從資料可以看出 features 有 carat, cut, color, clarity, depth, table, price, x, y, z。<br>
+我們先設定來看 PCA 能不能區分顏色，所以第一步驟是將所有非數字的欄位轉成 <code>dummy variables</code>。</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># get dummies and store it in a variable</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>dummies <span class="op">=</span> pd.get_dummies(diamond[[<span class="st">"cut"</span>, <span class="st">"clarity"</span>]])</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># concat dummies to original dataframe and drop values</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>merged <span class="op">=</span> pd.concat([diamond, dummies], axis<span class="op">=</span><span class="st">'columns'</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>merged.drop([<span class="st">'cut'</span>, <span class="st">'clarity'</span>], axis<span class="op">=</span><span class="st">'columns'</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(merged.describe())</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>merged</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              carat         depth         table         price             x  \
+count  53940.000000  53940.000000  53940.000000  53940.000000  53940.000000   
+mean       0.797940     61.749405     57.457184   3932.799722      5.731157   
+std        0.474011      1.432621      2.234491   3989.439738      1.121761   
+min        0.200000     43.000000     43.000000    326.000000      0.000000   
+25%        0.400000     61.000000     56.000000    950.000000      4.710000   
+50%        0.700000     61.800000     57.000000   2401.000000      5.700000   
+75%        1.040000     62.500000     59.000000   5324.250000      6.540000   
+max        5.010000     79.000000     95.000000  18823.000000     10.740000   
+
+                  y             z     cut_Ideal   cut_Premium  cut_Very Good  \
+count  53940.000000  53940.000000  53940.000000  53940.000000   53940.000000   
+mean       5.734526      3.538734      0.399537      0.255673       0.223990   
+std        1.142135      0.705699      0.489808      0.436243       0.416919   
+min        0.000000      0.000000      0.000000      0.000000       0.000000   
+25%        4.720000      2.910000      0.000000      0.000000       0.000000   
+50%        5.710000      3.530000      0.000000      0.000000       0.000000   
+75%        6.540000      4.040000      1.000000      1.000000       0.000000   
+max       58.900000     31.800000      1.000000      1.000000       1.000000   
+
+           cut_Good      cut_Fair    clarity_IF  clarity_VVS1  clarity_VVS2  \
+count  53940.000000  53940.000000  53940.000000  53940.000000  53940.000000   
+mean       0.090953      0.029848      0.033185      0.067760      0.093919   
+std        0.287545      0.170169      0.179121      0.251337      0.291719   
+min        0.000000      0.000000      0.000000      0.000000      0.000000   
+25%        0.000000      0.000000      0.000000      0.000000      0.000000   
+50%        0.000000      0.000000      0.000000      0.000000      0.000000   
+75%        0.000000      0.000000      0.000000      0.000000      0.000000   
+max        1.000000      1.000000      1.000000      1.000000      1.000000   
+
+        clarity_VS1   clarity_VS2   clarity_SI1   clarity_SI2    clarity_I1  
+count  53940.000000  53940.000000  53940.000000  53940.000000  53940.000000  
+mean       0.151483      0.227253      0.242214      0.170449      0.013737  
+std        0.358522      0.419061      0.428427      0.376030      0.116400  
+min        0.000000      0.000000      0.000000      0.000000      0.000000  
+25%        0.000000      0.000000      0.000000      0.000000      0.000000  
+50%        0.000000      0.000000      0.000000      0.000000      0.000000  
+75%        0.000000      0.000000      0.000000      0.000000      0.000000  
+max        1.000000      1.000000      1.000000      1.000000      1.000000  </code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>carat</th>
+      <th>color</th>
+      <th>depth</th>
+      <th>table</th>
+      <th>price</th>
+      <th>x</th>
+      <th>y</th>
+      <th>z</th>
+      <th>cut_Ideal</th>
+      <th>cut_Premium</th>
+      <th>...</th>
+      <th>cut_Good</th>
+      <th>cut_Fair</th>
+      <th>clarity_IF</th>
+      <th>clarity_VVS1</th>
+      <th>clarity_VVS2</th>
+      <th>clarity_VS1</th>
+      <th>clarity_VS2</th>
+      <th>clarity_SI1</th>
+      <th>clarity_SI2</th>
+      <th>clarity_I1</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.23</td>
+      <td>E</td>
+      <td>61.5</td>
+      <td>55.0</td>
+      <td>326</td>
+      <td>3.95</td>
+      <td>3.98</td>
+      <td>2.43</td>
+      <td>1</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.21</td>
+      <td>E</td>
+      <td>59.8</td>
+      <td>61.0</td>
+      <td>326</td>
+      <td>3.89</td>
+      <td>3.84</td>
+      <td>2.31</td>
+      <td>0</td>
+      <td>1</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.23</td>
+      <td>E</td>
+      <td>56.9</td>
+      <td>65.0</td>
+      <td>327</td>
+      <td>4.05</td>
+      <td>4.07</td>
+      <td>2.31</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.29</td>
+      <td>I</td>
+      <td>62.4</td>
+      <td>58.0</td>
+      <td>334</td>
+      <td>4.20</td>
+      <td>4.23</td>
+      <td>2.63</td>
+      <td>0</td>
+      <td>1</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.31</td>
+      <td>J</td>
+      <td>63.3</td>
+      <td>58.0</td>
+      <td>335</td>
+      <td>4.34</td>
+      <td>4.35</td>
+      <td>2.75</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>53935</th>
+      <td>0.72</td>
+      <td>D</td>
+      <td>60.8</td>
+      <td>57.0</td>
+      <td>2757</td>
+      <td>5.75</td>
+      <td>5.76</td>
+      <td>3.50</td>
+      <td>1</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>53936</th>
+      <td>0.72</td>
+      <td>D</td>
+      <td>63.1</td>
+      <td>55.0</td>
+      <td>2757</td>
+      <td>5.69</td>
+      <td>5.75</td>
+      <td>3.61</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>53937</th>
+      <td>0.70</td>
+      <td>D</td>
+      <td>62.8</td>
+      <td>60.0</td>
+      <td>2757</td>
+      <td>5.66</td>
+      <td>5.68</td>
+      <td>3.56</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>53938</th>
+      <td>0.86</td>
+      <td>H</td>
+      <td>61.0</td>
+      <td>58.0</td>
+      <td>2757</td>
+      <td>6.15</td>
+      <td>6.12</td>
+      <td>3.74</td>
+      <td>0</td>
+      <td>1</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>53939</th>
+      <td>0.75</td>
+      <td>D</td>
+      <td>62.2</td>
+      <td>55.0</td>
+      <td>2757</td>
+      <td>5.83</td>
+      <td>5.87</td>
+      <td>3.64</td>
+      <td>1</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>53940 rows × 21 columns</p>
+</div>
+</div>
+</div>
+<p>現在除了 color 之外，其他的都轉成數字了，但因為數字的 min, max, std 這些數值的級距不同，所以在做 PCA 之前先進行一個標準化的動作。</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pca <span class="op">=</span> decomposition.PCA()</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>pc <span class="op">=</span> pca.fit_transform(merged.loc[:, merged.columns<span class="op">!=</span><span class="st">'color'</span>])</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>pc_df <span class="op">=</span> pd.DataFrame(data<span class="op">=</span>pc)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>pc_df.head()</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">'var'</span>: pca.explained_variance_ratio_,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">'PC'</span>:[<span class="st">"PC"</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">1</span>,<span class="dv">21</span>))]</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>sns.barplot(x <span class="op">=</span> <span class="st">'PC'</span>, y<span class="op">=</span><span class="st">'var'</span>, data<span class="op">=</span>df, color<span class="op">=</span><span class="st">"c"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>&lt;AxesSubplot:xlabel='PC', ylabel='var'&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="pca_files/figure-html/cell-7-output-2.png" width="593" height="429"></p>
+</div>
+</div>
+<p>上圖為未經標準化的 variance。</p>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>merged_scale <span class="op">=</span> scaler.fit_transform(merged.loc[:, merged.columns<span class="op">!=</span><span class="st">'color'</span>])</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>pca <span class="op">=</span> decomposition.PCA()</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>pc_scale <span class="op">=</span> pca.fit_transform(merged_scale)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>pc_df_scale <span class="op">=</span> pd.DataFrame(pc_scale, columns <span class="op">=</span> [<span class="st">"PC"</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">1</span>,<span class="dv">21</span>))])</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>pc_df_scale[<span class="st">'color'</span>] <span class="op">=</span> merged.color</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>df_scale <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">'var'</span>: pca.explained_variance_ratio_,</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">'PC'</span>: [<span class="st">"PC"</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">1</span>,<span class="dv">21</span>))]</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>sns.barplot(x <span class="op">=</span> <span class="st">'PC'</span>, y<span class="op">=</span><span class="st">'var'</span>, data<span class="op">=</span>df_scale, color<span class="op">=</span><span class="st">"b"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>&lt;AxesSubplot:xlabel='PC', ylabel='var'&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="pca_files/figure-html/cell-8-output-2.png" width="601" height="429"></p>
+</div>
+</div>
+<p>上圖為經過 <code>standard scaler</code> 標準化的圖</p>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>sns.lmplot(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  x<span class="op">=</span><span class="st">"PC1"</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  y<span class="op">=</span><span class="st">"PC2"</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  data<span class="op">=</span>pc_df_scale,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  hue<span class="op">=</span><span class="st">"color"</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  fit_reg <span class="op">=</span> <span class="va">False</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  legend<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  scatter_kws<span class="op">=</span>{<span class="st">"s"</span>: <span class="dv">40</span>}</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><img src="scatter.png" class="img-fluid" alt="img"> 結果不是很理想，看起來這個資料集用 PCA 不是很好做顏色的 clustering。但我們還是呈現結果，並繪製 scree plot。之後有時間可以在嘗試不同的方法，但這個第二個部分主要是呈現有沒有標準化對於 variance 的影響。</p>
+<p>scree plot using <code>sns.scatterplot</code></p>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>pc_value <span class="op">=</span> np.arange(pca.n_components_) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>sns.scatterplot(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  x<span class="op">=</span><span class="st">'PC'</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  y<span class="op">=</span><span class="st">'var'</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  data<span class="op">=</span>df_scale</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<pre><code>&lt;AxesSubplot:xlabel='PC', ylabel='var'&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="pca_files/figure-html/cell-10-output-2.png" width="597" height="429"></p>
+</div>
+</div>
+</section>
+<section id="重點回顧" class="level3" data-number="1.0.7">
+<h3 data-number="1.0.7" class="anchored" data-anchor-id="重點回顧"><span class="header-section-number">1.0.7</span> 重點回顧</h3>
+<ul>
+<li>PCA 是一個線性降維的技術</li>
+<li>步驟是先將資料都<code>轉成數值型</code>，並<code>標準化（normalization, standardization)</code> 處理完之後進行 PCA 分析</li>
+<li>評斷結果好壞可以從視覺化下手：(1) xy 軸為 PC1, PC2 的分佈 (2) Scree plot</li>
+<li>理想上會希望前幾個 PCs 就能夠對於 Variance 有足夠的代表性 (Ex: 超過 70%)。</li>
+</ul>
+</section>
+<section id="參考資料" class="level3" data-number="1.0.8">
+<h3 data-number="1.0.8" class="anchored" data-anchor-id="參考資料"><span class="header-section-number">1.0.8</span> 參考資料</h3>
+<p><a href="https://blog.csdn.net/NeverLate_gogogo/article/details/88683904">PCA 算法目的作用以及解析</a><br>
+<a href="https://plotly.com/python/pca-visualization/">Plotly PCA 的教學</a><br>
+<a href="https://www.datasklr.com/principal-component-analysis-and-factor-analysis/principal-component-analysis">標準化 PCA 教學</a><br>
+<a href="https://cmdlinetips.com/2018/03/pca-example-in-python-with-scikit-learn/">Python and R tips</a></p>
 
 
 </section>
