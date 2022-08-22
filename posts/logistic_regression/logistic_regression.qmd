@@ -1,0 +1,20 @@
+---
+title: "Logistic Regression"
+format: html
+jupyter: python3
+---
+
+### 前言
+
+這是 StatQuest  講解 Logistic Regression 的筆記：
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/yIYKR4sgzI8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+重點節錄：  
+
+- 可用於統計與機器學習
+- 用在分類的問題，判斷預測是 True/ False
+- 判斷變數對於預測有沒有幫助 (透過 Walid Test)
+- fit the line with Maximum-likelihood
+
+看完之後我們利用 python 來做一個重點的回顧與練習。

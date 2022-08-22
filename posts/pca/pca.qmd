@@ -107,8 +107,10 @@ dummies = pd.get_dummies(diamond[["cut", "clarity"]])
 merged = pd.concat([diamond, dummies], axis='columns')
 merged.drop(['cut', 'clarity'], axis='columns', inplace=True)
 
+#random select rows
+merged = merged.sample(n=500)
+
 print(merged.describe())
-merged
 ```
 
 現在除了 color 之外，其他的都轉成數字了，但因為數字的 min, max, std 這些數值的級距不同，所以在做 PCA 之前先進行一個標準化的動作。
