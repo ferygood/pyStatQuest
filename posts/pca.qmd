@@ -150,6 +150,7 @@ sns.barplot(x = 'PC', y='var', data=df_scale, color="b")
 上圖為經過 `standard scaler` 標準化的圖
 
 ```{python}
+#| eval: false
 sns.lmplot(
   x="PC1",
   y="PC2",
@@ -161,6 +162,7 @@ sns.lmplot(
 )
 ```
 
+![img](scatter.png)
 結果不是很理想，看起來這個資料集用 PCA 不是很好做顏色的 clustering。但我們還是呈現結果，並繪製 scree plot。之後有時間可以在嘗試不同的方法，但這個第二個部分主要是呈現有沒有標準化對於 variance 的影響。
 
 scree plot using `sns.scatterplot`
