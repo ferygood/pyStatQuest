@@ -6,3 +6,4 @@
 #### 章節  
 - Principal Component Analysis (PCA) 運用 Singular Value Decomposition (SVD) 的主成分分析
 - Logistic Regression
+- Maximum likelihood (also likelihood vs probability)

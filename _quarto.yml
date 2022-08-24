@@ -9,6 +9,7 @@ book:
     - index.qmd
     - posts/pca/pca.qmd
     - posts/logistic_regression/logistic_regression.qmd
+    - posts/likelihood/likelihood.qmd
     - intro.qmd
     - summary.qmd
     - references.qmd

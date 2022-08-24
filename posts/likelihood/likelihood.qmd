@@ -1,0 +1,21 @@
+---
+title: "Maximum likelihood"
+jupyter: python3
+---
+
+### 前言
+
+這是 StatQuest  講解 likelihood 以及 maximum likelihood 的筆記：
+
+Probability is not likelihood!
+影片以常態分佈為例：
+<iframe width="560" height="315" src="https://www.youtube.com/embed/pYxNSUDSFH4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>  
+
+Maximum likelihood, clearly explained!
+<iframe width="560" height="315" src="https://www.youtube.com/embed/XepXtl9YKwc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+
+重點節錄：  
+
+- 
