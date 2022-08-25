@@ -1,0 +1,21 @@
+---
+title: "p-value"
+jupyter: python3
+---
+
+### 前言
+
+這是 StatQuest  講解 p-value 的筆記：
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/5Z9OIYA8He8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+這部影片用丟硬幣來當作例子。 以下為影片提到 p-value 的定義：  
+
+:::{.callout-note}
+A *p-value* is the probabillity that random chance generated the data, or something else that is equal or rarer.
+:::
+
+我嘗試以中文解釋為，p-value 代表你取樣該 data 之機率在整體分佈的稀有度。Part1 為計算你取樣的 data 在機率分布 (density) 的大小，Part2 為加總所有跟你取樣一樣機率大小以及更低的事件總和，這個總和為 p-value
+
+![](screenshot.png)
+以這張截圖的例子來說，你丟硬幣得到 HH 的 p-value 為何？首先你先計算 HH 和 TT 的機率各為 0.25，然而其他的可能性機率都比較高，所以你的 part1: 0.25 + 0.25 = 0.5，你的 part2: 0。所以 HH 的 p-value 為 0.5。
